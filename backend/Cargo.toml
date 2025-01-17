@@ -1,0 +1,13 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dotenv = "0.15.0"
+anyhow = "1.0.95"
+actix-cors = "0.7.0"
+actix-web = "4.9.0"
+serde = {version = "1.0.217", features = ["derive"]}
+sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio-native-tls", "macros", "chrono"]}
+chrono = {version = "0.4.39", features = ["serde"]}
