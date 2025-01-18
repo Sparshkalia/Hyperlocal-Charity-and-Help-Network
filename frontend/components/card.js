@@ -8,14 +8,13 @@ import { FiShare } from 'react-icons/fi';
 
 export default function InstaStyleCard() {
   const [likes, setLikes] = useState(121); 
-  const [isShared, setIsShared] = useState(false);
   const [comments, setComments] = useState([
     "i am willing to donate!",
     "Donation for good cause!",
     "mine blood group is B+!",
   ]);
   const [isLiked, setIsLiked] = useState(false); 
-  
+  const [showAllComments, setShowAllComments] = useState(false);
   const handleLiked = () => {
     setIsLiked(!isLiked);
     if (isLiked) setLikes((prev) => prev - 1);
@@ -30,14 +29,12 @@ export default function InstaStyleCard() {
       e.target.reset();
     }
   };
-
-  const handleShare = () => {
-    setIsShared(true); 
-    setTimeout(() => setIsShared(false), 2000); 
+  const toggleComments = () => {
+    setShowAllComments(!showAllComments); // Toggle the showAllComments state
   };
-
   return (
-    <div className="max-w-md mx-auto bg-white border rounded-lg shadow-md overflow-hidden">
+    <div className='m-5'>
+       <div className="max-w-md mx-auto bg-white border rounded-lg shadow-md overflow-hidden ">
       <div className="flex items-center px-4 py-3 space-x-3">
         <Image
           src={slogo} 
@@ -71,7 +68,6 @@ export default function InstaStyleCard() {
           <span className="ml-2 text-sm text-black">{likes} Likes</span>
         </p>
         <div
-          onClick={handleShare}
           className={`cursor-pointer text-2xl ${isShared ? 'text-blue-500' : 'text-gray-600'}`}
         >
           <FiShare />
@@ -91,11 +87,18 @@ export default function InstaStyleCard() {
             <span className="font-semibold">User {index + 1}</span> {comment}
           </p>
         ))}
-        {comments.length > 3 && (
-          <p className="text-sm text-gray-500 cursor-pointer mt-1">
+        {comments.length > 3 && !showAllComments && (
+          <button className="text-sm text-gray-500 cursor-pointer mt-1" onClick={toggleComments}>
             View all {comments.length} comments
-          </p>
+          </button>
         )}
+        {showAllComments &&
+          comments.slice(3).map((comment, index) => (
+            <p key={index + 3} className="text-sm text-gray-700">
+              <span className="font-semibold">User {index + 4}</span> {comment}
+            </p>
+          ))}
+
       </div>
       <form
         onSubmit={handleAddComment}
@@ -105,7 +108,7 @@ export default function InstaStyleCard() {
           type="text"
           name="comment"
           placeholder="Add a comment..."
-          className="flex-1 p-2 text-sm border-none focus:outline-none bg-white"
+          className="flex-1 p-2 text-sm border-none focus:outline-none bg-white text-black"
         />
         <button
           type="submit"
@@ -114,6 +117,7 @@ export default function InstaStyleCard() {
           Post
         </button>
       </form>
+    </div>
     </div>
   );
 }
