@@ -4,7 +4,7 @@ export default function HomePage() {
     return (
         <div>
             <Navbar />
-            <h1>Welcome to the srijan chutiya</h1>
+            <h1>Welcome to the home HomePage</h1>
         </div>
     );
 }
