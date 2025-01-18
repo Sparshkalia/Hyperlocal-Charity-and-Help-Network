@@ -12,7 +12,7 @@
 Using `anyhow` to handle errors more elegantly (might use `thiserror` in the future). Using `actix-web` framework to handle the backend api creation.
 
 
-##Frontend
+## Frontend
 
 - Set up a new Next.js project using `npx create-next-app@latest`.
 - After setting up, add the necessary files as needed.
