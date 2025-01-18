@@ -68,7 +68,6 @@ export default function InstaStyleCard() {
           <span className="ml-2 text-sm text-black">{likes} Likes</span>
         </p>
         <div
-          className={`cursor-pointer text-2xl ${isShared ? 'text-blue-500' : 'text-gray-600'}`}
         >
           <FiShare />
         </div>
