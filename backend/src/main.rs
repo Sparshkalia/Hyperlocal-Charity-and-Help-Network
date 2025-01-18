@@ -1,5 +1,5 @@
 use crate::db_service::Database;
-use crate::handlers::get_users;
+use crate::handlers::{add_new_user, get_users, get_users_by_id, login};
 use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, http};
@@ -8,10 +8,10 @@ use dotenv::dotenv;
 use sqlx::migrate::Migrator;
 use std::env;
 
+mod auth;
 mod db_service;
 mod handlers;
 mod models;
-mod auth;
 
 static MIGRATOR: Migrator = sqlx::migrate!();
 
@@ -47,6 +47,9 @@ async fn main() -> Result<()> {
                     ]),
             )
             .service(get_users)
+            .service(get_users_by_id)
+            .service(login)
+            .service(add_new_user)
     })
     .bind(env::var("ADDRESS").context("$ADDRESS not found")?)?
     .run()
