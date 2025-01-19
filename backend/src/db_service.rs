@@ -82,5 +82,4 @@ impl Database {
             .fetch_one(&self.pool)
             .await.context("Failed to add new user")
     }
-    /// Create a new post
 }
