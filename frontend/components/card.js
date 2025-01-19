@@ -1,25 +1,16 @@
-'use client'
+'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import sample from './sample.png';
-import slogo from './slogo.png';
-import { FcLike, FcLikePlaceholder } from 'react-icons/fc';
 import { FiShare } from 'react-icons/fi';
 
-export default function InstaStyleCard() {
-  const [likes, setLikes] = useState(121); 
+export default function InstaStyleCard({ post }) {
   const [comments, setComments] = useState([
-    "i am willing to donate!",
-    "Donation for good cause!",
-    "mine blood group is B+!",
+    'I am willing to donate!',
+    'Donation for a good cause!',
+    'My blood group is B+!',
   ]);
-  const [isLiked, setIsLiked] = useState(false); 
+
   const [showAllComments, setShowAllComments] = useState(false);
-  const handleLiked = () => {
-    setIsLiked(!isLiked);
-    if (isLiked) setLikes((prev) => prev - 1);
-    if (!isLiked) setLikes((prev) => prev + 1);
-  };
 
   const handleAddComment = (e) => {
     e.preventDefault();
@@ -29,94 +20,106 @@ export default function InstaStyleCard() {
       e.target.reset();
     }
   };
+
   const toggleComments = () => {
-    setShowAllComments(!showAllComments); // Toggle the showAllComments state
+    setShowAllComments(!showAllComments);
   };
+
+  const handleShare = async () => {
+    const shareData = {
+      title: post.title,
+      text: 'Join us in this noble cause! Donate blood and save lives.',
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      alert('Sharing not supported on this device.');
+    }
+  };
+
   return (
-    <div className='m-5'>
-       <div className="max-w-md mx-auto bg-white border rounded-lg shadow-md overflow-hidden ">
-      <div className="flex items-center px-4 py-3 space-x-3">
-        <Image
-          src={slogo} 
-          alt="Profile Picture"
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-        <div>
-          <p className="text-sm font-medium text-gray-800">AIIMS-New Delhi</p>
-          <p className="text-xs text-gray-500">8 hours ago</p>
+    <div className="m-5">
+      <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+        <div className="flex items-center px-4 py-3 space-x-3 bg-gray-50">
+          {/* Title Logo */}
+          <Image
+            src={post.titlelogo}
+            alt="Profile Picture"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <div>
+            <p className="text-sm font-semibold text-gray-900">{post.title}</p>
+            <p className="text-xs text-gray-500">{post.time}</p>
+          </div>
         </div>
-      </div>
-      <div className="relative h-64 w-full">
-        <Image
-          src={sample} 
-          alt="Post Image"
-          fill
-          style={{ objectFit: 'cover',borderRadius:'10px'}}
-        />
-      </div>
-      <div className="flex items-center px-4 py-3 space-x-6">
-        <div className="text-3xl">
-          {isLiked ? (
-            <FcLike onClick={handleLiked} className="cursor-pointer" />
-          ) : (
-            <FcLikePlaceholder onClick={handleLiked} className="cursor-pointer" />
+        <div className="relative h-64 w-full">
+          {/* Post Image */}
+          <Image
+            src={post.postimg}
+            alt="Post Image"
+            fill
+            style={{ objectFit: 'cover', borderRadius: '10px' }}
+          />
+        </div>
+        <div className="flex items-center justify-between px-4 py-3 space-x-6 bg-gray-50">
+          <button
+            onClick={handleShare}
+            className="flex items-center text-gray-800 hover:text-blue-500"
+          >
+            <FiShare className="text-lg" />
+            <span className="ml-2 text-sm font-medium">Share</span>
+          </button>
+        </div>
+        <div className="px-4 py-3">
+        <div>
+            <p className='text-black'>
+              <strong>{post.title}: </strong>
+              {post.discription}
+            </p>
+          </div>
+          <br/>
+          <h3 className="text-sm font-medium text-gray-800 mb-2">Comments</h3>
+          <ul className="text-sm text-gray-700 space-y-2">
+            {(showAllComments ? comments : comments.slice(0, 2)).map(
+              (comment, index) => (
+                <li key={index} className="bg-gray-100 p-2 rounded-md">
+                  {comment}
+                </li>
+              )
+            )}
+          </ul>
+          {comments.length > 2 && (
+            <button
+              onClick={toggleComments}
+              className="text-blue-500 text-xs mt-2"
+            >
+              {showAllComments ? 'Show Less' : `Show ${comments.length - 2} more comments`}
+            </button>
           )}
         </div>
-        <p className="text-lg font-medium flex-1">
-          <span className="ml-2 text-sm text-black">{likes} Likes</span>
-        </p>
-        <div
-        >
-          <FiShare />
-        </div>
-        <button className="flex items-center text-gray-800 hover:text-gray-600">
-          <span className="ml-2 text-sm">Share</span>
-        </button>
-      </div>
-      <div className="px-4 py-2">
-        <p className="text-sm text-gray-800">
-          <span className="font-semibold">AIIMS-New Delhi</span> Urjent Need of blood!!
-        </p>
-      </div>
-      <div className="px-4 py-2">
-        {comments.slice(0, 3).map((comment, index) => (
-          <p key={index} className="text-sm text-gray-700">
-            <span className="font-semibold">User {index + 1}</span> {comment}
-          </p>
-        ))}
-        {comments.length > 3 && !showAllComments && (
-          <button className="text-sm text-gray-500 cursor-pointer mt-1" onClick={toggleComments}>
-            View all {comments.length} comments
+        <form onSubmit={handleAddComment} className="px-4 py-3">
+          <input
+            type="text"
+            name="comment"
+            placeholder="Add a comment..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring focus:ring-blue-200 text-black"
+          />
+          <button
+            type="submit"
+            className="mt-2 w-full bg-blue-500 text-white py-2 rounded-md text-sm hover:bg-blue-600 transition"
+          >
+            Post Comment
           </button>
-        )}
-        {showAllComments &&
-          comments.slice(3).map((comment, index) => (
-            <p key={index + 3} className="text-sm text-gray-700">
-              <span className="font-semibold">User {index + 4}</span> {comment}
-            </p>
-          ))}
-
+        </form>
       </div>
-      <form
-        onSubmit={handleAddComment}
-        className="flex items-center px-4 py-3 border-t bg-gray-50"
-      >
-        <input
-          type="text"
-          name="comment"
-          placeholder="Add a comment..."
-          className="flex-1 p-2 text-sm border-none focus:outline-none bg-white text-black"
-        />
-        <button
-          type="submit"
-          className="text-blue-500 text-sm font-semibold hover:text-blue-700"
-        >
-          Post
-        </button>
-      </form>
-    </div>
     </div>
   );
 }
