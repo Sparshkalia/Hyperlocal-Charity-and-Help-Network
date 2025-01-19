@@ -1,3 +1,4 @@
+use crate::auth::Token;
 use crate::db_service::Database;
 use crate::handlers::{add_new_user, get_users, get_users_by_id, login};
 use actix_cors::Cors;
@@ -30,12 +31,14 @@ async fn main() -> Result<()> {
         .context("Failed to run migrations")?;
 
     let db_data = Data::new(db);
+    let token_data = Data::new(Token::new()?);
 
     println!("Server started successfully!");
 
     HttpServer::new(move || {
         App::new()
             .app_data(db_data.clone())
+            .app_data(token_data.clone())
             .wrap(
                 Cors::default()
                     // .allowed_origin("https:://idk")
