@@ -76,3 +76,4 @@ async fn add_new_user(db: Data<Database>, new_user: Json<NewUser>) -> impl Respo
         })),
     }
 }
+

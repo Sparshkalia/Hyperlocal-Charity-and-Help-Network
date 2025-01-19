@@ -19,7 +19,8 @@ CREATE TABLE receiver_posts
     user_id     INT            NOT NULL,
     title       VARCHAR(255)   NOT NULL,
     description TEXT           NOT NULL,
-    media_url   BYTEA,
+    media       BYTEA,
+    media_type  VARCHAR(50),
     completed   BOOLEAN        NOT NULL DEFAULT FALSE,
     created_at  timestamptz(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE
@@ -31,7 +32,8 @@ CREATE TABLE donor_posts
     user_id     INT            NOT NULL,
     title       VARCHAR(255)   NOT NULL,
     description TEXT           NOT NULL,
-    media_url   BYTEA,
+    media       BYTEA,
+    media_type  VARCHAR(50),
     completed   BOOLEAN        NOT NULL DEFAULT FALSE,
     created_at  timestamptz(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE

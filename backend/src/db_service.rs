@@ -1,5 +1,5 @@
 use crate::auth::{check_password, hash_password};
-use crate::models::{LoginData, NewUser, User};
+use crate::models::{LoginData, NewPost, NewUser, Post, User};
 use anyhow::{Context, Result, anyhow};
 use sqlx::PgPool;
 
@@ -34,7 +34,6 @@ impl Database {
             .context("Failed to fetch users")
     }
     /// Query to get the user by user_id
-    /// TODO- Add JWT authentication
     pub async fn get_user_by_id(&self, user_id: i32) -> Result<User> {
         sqlx::query_as!(
             User,
@@ -83,4 +82,5 @@ impl Database {
             .fetch_one(&self.pool)
             .await.context("Failed to add new user")
     }
+    /// Create a new post
 }
