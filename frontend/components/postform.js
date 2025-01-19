@@ -39,7 +39,6 @@ export default function PostForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const newPost = {
       id: Date.now().toString(),
       title: formData.title,

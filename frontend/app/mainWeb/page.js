@@ -8,7 +8,7 @@ function Hucn() {
   const [postcontent, setPostcontent] = useState([]);
 
   const addpostcontent = (post) => {
-    console.log('Post Added:', post); // Debugging: Check if post is being added
+    console.log('Post Added:', post);
     setPostcontent((prevPosts) => [...prevPosts, post]);
   };
 
