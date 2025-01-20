@@ -1,7 +1,8 @@
 "use client";
-import InstaStyleCard from '@/components/card';
-import { Postprovider } from '@/components/postcomponents';
-import PostForm from '@/components/postform';
+import InstaStyleCard from '@/components/card/card';
+import { Postprovider } from '@/components/card/postcomponents';
+import PostForm from '@/components/card/postform';
+import Usericon from '@/components/userprofile/icon';
 import { useState } from 'react';
 
 function Hucn() {
@@ -28,11 +29,12 @@ function Hucn() {
     time: "1 hour ago",
     titlelogo: "/slogo.png",
     postimg: "/sample.png",
-    discription: "Urgent need of blood!",
+    description: "Urgent need of blood!",
   };
 
   return (
     <Postprovider value={{ postcontent, addpostcontent, updatepostcontent, deletepostcontent }}>
+      <Usericon/>
       <div>
         <InstaStyleCard post={post} />
       </div>

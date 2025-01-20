@@ -47,7 +47,6 @@ export default function InstaStyleCard({ post }) {
     <div className="m-5">
       <div className="max-w-md mx-auto bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
         <div className="flex items-center px-4 py-3 space-x-3 bg-gray-50">
-          {/* Title Logo */}
           <Image
             src={post.titlelogo}
             alt="Profile Picture"
@@ -61,7 +60,6 @@ export default function InstaStyleCard({ post }) {
           </div>
         </div>
         <div className="relative h-64 w-full">
-          {/* Post Image */}
           <Image
             src={post.postimg}
             alt="Post Image"
@@ -82,7 +80,7 @@ export default function InstaStyleCard({ post }) {
         <div>
             <p className='text-black'>
               <strong>{post.title}: </strong>
-              {post.discription}
+              {post.description}
             </p>
           </div>
           <br/>

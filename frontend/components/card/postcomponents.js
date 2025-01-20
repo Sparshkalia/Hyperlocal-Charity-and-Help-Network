@@ -8,7 +8,7 @@ export const createpost=createContext({
             time:"1 hours ago",
             titlelogo:'./slogo.png',
             postimg:'./sample.png',
-            discription:"Urgent need of blood!",
+            description:"Urgent need of blood!",
         },
     ],
     addpostcontent: (post)=>{},
