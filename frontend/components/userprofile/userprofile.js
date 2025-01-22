@@ -21,9 +21,12 @@ export default function ProfilePage() {
     const rout=useRouter()
     const handlepost=(e)=>{
         e.preventDefault()
+        rout.push('/postadder')
+    }
+    const handleback=(e)=>{
+        e.preventDefault()
         rout.push('/mainWeb')
     }
-
     return (
         <div className="min-h-screen bg-gray-100 flex">
         <aside className="w-64 bg-white shadow-lg">
@@ -33,7 +36,10 @@ export default function ProfilePage() {
             <nav className="mt-6">
             <ul>
                 <li className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
-                <button onClick={handlepost} className='pr-44'>Posts</button>
+                <button onClick={handleback} className='pr-44'>Back</button>
+                </li>
+                <li className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
+                <button onClick={handlepost} className='flex-1 text-left'>Add Posts</button>
                 </li>
                 <li className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
                 <button className='pr-44'>Chats</button>
