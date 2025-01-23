@@ -74,3 +74,11 @@ pub struct NewComment {
     pub post_type: PostType,
     pub comment_text: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct UpdateUser {
+    pub full_name: Option<String>,
+    pub profile_pic: Option<Vec<u8>>,
+    pub profile_pic_type: Option<String>,
+    pub password: Option<String>,
+}

@@ -1,9 +1,9 @@
 use crate::auth::Token;
 use crate::db_service::Database;
-use crate::models::{LoginData, NewComment, NewPost, NewUser, PostType};
+use crate::models::{LoginData, NewComment, NewPost, NewUser, PostType, UpdateUser};
 use actix_web::cookie::Cookie;
 use actix_web::web::{Data, Json, Path};
-use actix_web::{HttpRequest, HttpResponse, Responder, get, post};
+use actix_web::{HttpRequest, HttpResponse, Responder, get, post, put};
 use serde::Deserialize;
 use serde_json::json;
 
@@ -171,6 +171,39 @@ async fn show_comments(
         .await
     {
         Ok(comments) => HttpResponse::Ok().json(comments),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "error": e.to_string()
+        })),
+    }
+}
+
+#[put("/user/{id}")]
+async fn update_user(
+    db: Data<Database>,
+    req: HttpRequest,
+    user_id: Path<i32>,
+    update_user: Json<UpdateUser>,
+    token: Data<Token>,
+) -> impl Responder {
+    let auth_token = match Token::extract_token_from_cookie(&req) {
+        None => return HttpResponse::Unauthorized().body("Unauthorized"),
+        Some(token) => token,
+    };
+
+    let token_user_id = match token.get_user_id_from_jwt(&auth_token) {
+        Ok(user_id) => user_id,
+        Err(_) => return HttpResponse::Unauthorized().body("Invalid token"),
+    };
+
+    if token_user_id != user_id.into_inner() {
+        return HttpResponse::Unauthorized().body("Unauthorized");
+    }
+
+    match db
+        .update_user(token_user_id, update_user.into_inner())
+        .await
+    {
+        Ok(user) => HttpResponse::Ok().json(user),
         Err(e) => HttpResponse::InternalServerError().json(json!({
             "error": e.to_string()
         })),

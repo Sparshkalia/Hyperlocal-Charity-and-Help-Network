@@ -1,5 +1,7 @@
 use crate::auth::{check_password, hash_password};
-use crate::models::{Comment, LoginData, NewComment, NewPost, NewUser, Post, PostType, User};
+use crate::models::{
+    Comment, LoginData, NewComment, NewPost, NewUser, Post, PostType, UpdateUser, User,
+};
 use anyhow::{Context, Result, anyhow};
 use sqlx::PgPool;
 
@@ -158,7 +160,7 @@ impl Database {
 
         Ok(result)
     }
-
+    /// Query to show all the comments of a particular post
     pub async fn show_comments(
         &self,
         user_id: i32,
@@ -182,5 +184,29 @@ impl Database {
             .fetch_all(&self.pool)
             .await
             .context("Failed to fetch comments")
+    }
+    ///Query to update a user profile
+    pub async fn update_user(&self, user_id: i32, update_user: UpdateUser) -> Result<User> {
+        sqlx::query_as!(
+            User,
+            r#"
+                UPDATE users
+                SET
+                    full_name = COALESCE($1, full_name),
+                    profile_pic = COALESCE($2, profile_pic),
+                    profile_pic_type = COALESCE($3, profile_pic_type),
+                    password = COALESCE($4, password)
+                WHERE user_id = $5
+                RETURNING user_id, username, email, password, full_name, profile_pic, profile_pic_type, created_at
+            "#,
+            update_user.full_name,
+            update_user.profile_pic,
+            update_user.profile_pic_type,
+            update_user.password.map(|pass| hash_password(pass)).transpose()?,
+            user_id
+        )
+            .fetch_one(&self.pool)
+            .await
+            .context("Failed to update user")
     }
 }
