@@ -1,10 +1,11 @@
 "use client";
 import InstaStyleCard from '@/components/card/card';
 import { Postprovider } from '@/components/card/postcomponents';
+import PostForm from '@/components/card/postform';
 import Usericon from '@/components/userprofile/icon';
 import { useState } from 'react';
 
-function Hucn() {
+function Postadder() {
   const [postcontent, setPostcontent] = useState([]);
 
   const addpostcontent = (post) => {
@@ -40,8 +41,9 @@ function Hucn() {
       {postcontent.map((post) => (
         <InstaStyleCard key={post.id} post={post} />
       ))}
+      <PostForm />
     </Postprovider>
   );
 }
 
-export default Hucn;
+export default Postadder;

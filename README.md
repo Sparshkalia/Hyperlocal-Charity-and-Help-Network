@@ -9,6 +9,8 @@
 - Created a simple webpage that routes to a sign-in page.
 - Upon successful sign-in, users are directed to the main webpage.
 - On the main page, users can view posts from various people about donation requests and those willing to donate.
+- Added fully functional profile page involving some very challenging and complex operations operations
+- Fixed some bugs related to post
 
 ## Backend
 
