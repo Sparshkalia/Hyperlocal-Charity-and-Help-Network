@@ -40,10 +40,13 @@ pub struct Post {
     media_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Type)]
+#[derive(Serialize, Deserialize, Type, Clone, Copy)]
 #[sqlx(type_name = "post_type_enum")]
 pub enum PostType {
-    Receiver, Donor
+    #[sqlx(rename = "receiver")]
+    Receiver,
+    #[sqlx(rename = "donor")]
+    Donor,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -53,4 +56,21 @@ pub struct NewPost {
     pub description: String,
     pub media: Option<Vec<u8>>,
     pub media_type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, FromRow)]
+pub struct Comment {
+    pub comment_id: i32,
+    pub user_id: i32,
+    pub post_id: i32,
+    pub post_type: PostType,
+    pub comment_text: String,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct NewComment {
+    pub post_id: i32,
+    pub post_type: PostType,
+    pub comment_text: String,
 }

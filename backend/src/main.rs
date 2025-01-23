@@ -1,11 +1,15 @@
 use crate::auth::Token;
 use crate::db_service::Database;
-use crate::handlers::{add_new_user, get_users, get_users_by_id, login};
+use crate::handlers::{
+    add_comment, add_new_user, add_post, get_users, get_users_by_id, login, show_comments,
+};
+use crate::models::PostType;
 use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, http};
 use anyhow::{Context, Result};
 use dotenv::dotenv;
+use serde_json::json;
 use sqlx::migrate::Migrator;
 use std::env;
 
@@ -26,7 +30,7 @@ async fn main() -> Result<()> {
     .context("Could not connect to database")?;
 
     MIGRATOR
-        .run(db.pool())
+        .run(&db.pool)
         .await
         .context("Failed to run migrations")?;
 
@@ -53,6 +57,9 @@ async fn main() -> Result<()> {
             .service(get_users_by_id)
             .service(login)
             .service(add_new_user)
+            .service(add_post)
+            .service(add_comment)
+            .service(show_comments)
     })
     .bind(env::var("ADDRESS").context("$ADDRESS not found")?)?
     .run()
