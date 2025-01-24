@@ -27,6 +27,10 @@ export default function ProfilePage() {
         e.preventDefault()
         rout.push('/mainWeb')
     }
+    const handlechat=(e)=>{
+        e.preventDefault()
+        rout.push('/chatpage')
+    }
     return (
         <div className="min-h-screen bg-gray-100 flex">
         <aside className="w-64 bg-white shadow-lg">
@@ -42,7 +46,7 @@ export default function ProfilePage() {
                 <button onClick={handlepost} className='flex-1 text-left'>Add Posts</button>
                 </li>
                 <li className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
-                <button className='pr-44'>Chats</button>
+                <button onClick={handlechat} className='pr-44'>Chats</button>
                 </li>
                 <li className="flex items-center space-x-3 px-6 py-3 text-gray-600 hover:bg-gray-100 hover:text-blue-500 cursor-pointer">
                 <span>👤</span>
