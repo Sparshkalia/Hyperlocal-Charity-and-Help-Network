@@ -1,9 +1,9 @@
 use crate::auth::Token;
 use crate::db_service::Database;
-use crate::handlers::{add_new_user, get_users, get_users_by_id, login};
+use crate::handlers::{add_comment, add_new_user, add_post, get_users, get_users_by_id, login, show_comments, update_user};
 use actix_cors::Cors;
 use actix_web::web::Data;
-use actix_web::{App, HttpServer, http};
+use actix_web::{http, App, HttpServer};
 use anyhow::{Context, Result};
 use dotenv::dotenv;
 use sqlx::migrate::Migrator;
@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
     .context("Could not connect to database")?;
 
     MIGRATOR
-        .run(db.pool())
+        .run(&db.pool)
         .await
         .context("Failed to run migrations")?;
 
@@ -35,13 +35,13 @@ async fn main() -> Result<()> {
 
     println!("Server started successfully!");
 
+    //Might run the API on $ADDRESS/api 
     HttpServer::new(move || {
         App::new()
             .app_data(db_data.clone())
             .app_data(token_data.clone())
             .wrap(
                 Cors::default()
-                    // .allowed_origin("https:://idk")
                     .allow_any_origin()
                     .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
                     .allowed_headers(vec![
@@ -53,6 +53,10 @@ async fn main() -> Result<()> {
             .service(get_users_by_id)
             .service(login)
             .service(add_new_user)
+            .service(add_post)
+            .service(add_comment)
+            .service(show_comments)
+            .service(update_user)
     })
     .bind(env::var("ADDRESS").context("$ADDRESS not found")?)?
     .run()
