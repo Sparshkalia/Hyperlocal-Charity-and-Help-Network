@@ -1,9 +1,12 @@
 use crate::auth::Token;
 use crate::db_service::Database;
-use crate::handlers::{add_comment, add_new_user, add_post, get_users, get_users_by_id, login, show_comments, update_user};
+use crate::handlers::{
+    add_comment, add_new_user, add_post, get_messages_between_users, get_users, get_users_by_id,
+    login, send_message, show_comments, update_user,
+};
 use actix_cors::Cors;
 use actix_web::web::Data;
-use actix_web::{http, App, HttpServer};
+use actix_web::{App, HttpServer, http};
 use anyhow::{Context, Result};
 use dotenv::dotenv;
 use sqlx::migrate::Migrator;
@@ -35,7 +38,7 @@ async fn main() -> Result<()> {
 
     println!("Server started successfully!");
 
-    //Might run the API on $ADDRESS/api 
+    //Might run the API on $ADDRESS/api
     HttpServer::new(move || {
         App::new()
             .app_data(db_data.clone())
@@ -57,6 +60,8 @@ async fn main() -> Result<()> {
             .service(add_comment)
             .service(show_comments)
             .service(update_user)
+            .service(send_message)
+            .service(get_messages_between_users)
     })
     .bind(env::var("ADDRESS").context("$ADDRESS not found")?)?
     .run()

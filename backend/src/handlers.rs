@@ -1,6 +1,6 @@
 use crate::auth::Token;
 use crate::db_service::Database;
-use crate::models::{LoginData, NewComment, NewPost, NewUser, PostType, UpdateUser};
+use crate::models::{LoginData, NewComment, NewMessage, NewPost, NewUser, PostType, UpdateUser};
 use actix_web::cookie::Cookie;
 use actix_web::web::{Data, Json, Path};
 use actix_web::{HttpRequest, HttpResponse, Responder, get, post, put};
@@ -204,6 +204,66 @@ async fn update_user(
         .await
     {
         Ok(user) => HttpResponse::Ok().json(user),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "error": e.to_string()
+        })),
+    }
+}
+
+#[post("/message")]
+async fn send_message(
+    db: Data<Database>,
+    req: HttpRequest,
+    new_message: Json<NewMessage>,
+    token: Data<Token>,
+) -> impl Responder {
+    let auth_token = match Token::extract_token_from_cookie(&req) {
+        None => return HttpResponse::Unauthorized().body("Unauthorized"),
+        Some(token) => token,
+    };
+
+    let token_user_id = match token.get_user_id_from_jwt(&auth_token) {
+        Ok(user_id) => user_id,
+        Err(_) => return HttpResponse::Unauthorized().body("Invalid token"),
+    };
+
+    let new_message = new_message.into_inner();
+    if token_user_id != new_message.sender_id {
+        return HttpResponse::Unauthorized().body("Unauthorized");
+    }
+
+    match db.add_message(new_message).await {
+        Ok(message) => HttpResponse::Ok().json(message),
+        Err(e) => HttpResponse::InternalServerError().json(json!({
+            "error": e.to_string()
+        })),
+    }
+}
+
+#[get("messages/{bf}/{gf}")]
+async fn get_messages_between_users(
+    db: Data<Database>,
+    req: HttpRequest,
+    path: Path<(i32, i32)>,
+    token: Data<Token>,
+) -> impl Responder {
+    let auth_token = match Token::extract_token_from_cookie(&req) {
+        None => return HttpResponse::Unauthorized().body("Unauthorized"),
+        Some(token) => token,
+    };
+
+    let token_user_id = match token.get_user_id_from_jwt(&auth_token) {
+        Ok(user_id) => user_id,
+        Err(_) => return HttpResponse::Unauthorized().body("Invalid token"),
+    };
+
+    let (bf, gf) = path.into_inner();
+    if token_user_id != bf {
+        return HttpResponse::Unauthorized().body("Unauthorized");
+    }
+
+    match db.get_messages_between_users(bf, gf).await {
+        Ok(messages) => HttpResponse::Ok().json(messages),
         Err(e) => HttpResponse::InternalServerError().json(json!({
             "error": e.to_string()
         })),

@@ -82,3 +82,20 @@ pub struct UpdateUser {
     pub profile_pic_type: Option<String>,
     pub password: Option<String>,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct NewMessage {
+    pub sender_id: i32,
+    pub receiver_id: i32,
+    pub content: String,
+}
+
+#[derive(Serialize, Deserialize, FromRow)]
+pub struct Message {
+    pub message_id: i32,
+    pub sender_id: i32,
+    pub receiver_id: i32,
+    pub content: String,
+    pub sent_at: DateTime<Utc>,
+    pub is_read: bool,
+}
