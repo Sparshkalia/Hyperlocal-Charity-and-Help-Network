@@ -5,14 +5,25 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import Glogo from './Glogo.png';
 import Alogo from './Alogo.png';
+import axios from 'axios';
 const Form = () => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const route = useRouter();
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        route.push('/mainWeb');
-    }
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+        const response = await axios.post('http://localhost:8080/login', {
+          username: email,
+          password: password,
+        });
+        console.log('Response:', response);
+        route.push(`/profile/${response.data.user_id}`); // Use backticks here
+      } catch (error) {
+        console.error('Error:', error);
+      }
+      
+  };
     return (
         <StyledWrapper>
         <div className="flex justify-center items-center min-h-screen">
