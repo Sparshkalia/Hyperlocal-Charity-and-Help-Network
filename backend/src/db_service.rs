@@ -1,6 +1,7 @@
 use crate::auth::{check_password, hash_password};
 use crate::models::{
-    Comment, LoginData, NewComment, NewPost, NewUser, Post, PostType, UpdateUser, User,
+    Comment, LoginData, Message, NewComment, NewMessage, NewPost, NewUser, Post, PostType,
+    UpdateUser, User,
 };
 use anyhow::{Context, Result, anyhow};
 use sqlx::PgPool;
@@ -208,5 +209,38 @@ impl Database {
             .fetch_one(&self.pool)
             .await
             .context("Failed to update user")
+    }
+    ///Query to add a new message
+    pub async fn add_message(&self, new_message: NewMessage) -> Result<Message> {
+        sqlx::query_as!(
+            Message,
+            r#"
+                INSERT INTO messages (sender_id, receiver_id, content)
+                VALUES ($1, $2, $3)
+                RETURNING message_id, sender_id, receiver_id, content, sent_at, is_read
+            "#,
+            new_message.sender_id,
+            new_message.receiver_id,
+            new_message.content,
+        )
+            .fetch_one(&self.pool)
+            .await
+            .context("Failed to add new message")
+    }
+    ///Query to get all the messages between two people
+    pub async fn get_messages_between_users(&self, bf: i32, gf: i32) -> Result<Vec<Message>> {
+        sqlx::query_as!(
+            Message,
+            r#"
+                SELECT message_id, sender_id, receiver_id, content, sent_at, is_read
+                FROM messages
+                WHERE (sender_id = $1 AND receiver_id = $2) OR (sender_id = $2 AND receiver_id = $1)
+            "#,
+            bf,
+            gf
+        )
+            .fetch_all(&self.pool)
+            .await
+            .context("Failed to get messages between bf and gf")
     }
 }
