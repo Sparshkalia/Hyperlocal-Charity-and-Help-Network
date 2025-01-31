@@ -34,7 +34,7 @@ export default function ChatWindow({ activeChat, chats, setChats }) {
       ...chatMessages,
       [activeChat.id]: [
         ...(chatMessages[activeChat.id] || []),
-        { id: Date.now(), text: newMessage, sender: 'You' },//udate here i have used random id for message
+        { id: Date.now(), text: newMessage, sender: 'You' },//update here i have used random id for message
       ],
     };
 
