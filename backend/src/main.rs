@@ -50,7 +50,10 @@ async fn main() -> Result<()> {
                     .allowed_headers(vec![
                         http::header::CONTENT_TYPE,
                         http::header::AUTHORIZATION,
-                    ]),
+                        http::header::COOKIE,
+                        http::header::SET_COOKIE,
+                    ])
+                    .supports_credentials(),
             )
             .service(get_users)
             .service(get_users_by_id)
