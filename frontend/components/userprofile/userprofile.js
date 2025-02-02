@@ -1,42 +1,13 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios'; // Ensure axios is imported
+'use client';
+import { useProfile } from '@/components/userprofile/profilecomponents'; // Import the context hook
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import ProfileForm from './userprofileform';
 import { IoSettings } from 'react-icons/io5';
-import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
-    const [profiles, setProfiles] = useState({
-        id: "",
-        fullname: "",
-        username: "",
-        email: "",
-        profilePic: '/slogo.png', // Default image in case profile_pic is null
-        profilePicType: "",
-        createdAt: "",
-        following: 345, // Static placeholder as API doesn't provide this
-        followers: 124,
-        events: 63,
-    });
-
-    const [userid, setUserid] = useState(null); // Define userid state
-
+    const { profileContent, setProfileContent } = useProfile(); // Use context instead of local state
     const router = useRouter();
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-          try {
-            const response = await axios.get(`http://localhost:8080/user/${userid}`);
-            setProfiles(response.data); // Update setUserData to setProfiles
-          } catch (error) {
-            console.error('Error fetching user data:', error);
-          }
-        };
-    
-        if (userid) {
-          fetchUserData();
-        }
-      }, [userid]);
 
     const handlePost = (e) => {
         e.preventDefault();
@@ -81,42 +52,34 @@ export default function ProfilePage() {
                     </ul>
                 </nav>
             </aside>
-            <div className="flex-1 p-8">
-                <div className="flex space-x-8">
-                    <div className="w-1/3 bg-white shadow-lg rounded-lg p-6">
-                        <Image
-                            src={profiles.profilePic}
-                            alt="User Profile"
-                            width={400}
-                            height={400}
-                            className="w-full h-auto object-contain rounded-lg"
-                            priority
-                        />
-                        <div className="text-center mt-4">
-                            <h2 className="text-xl font-bold text-gray-800">
-                                {profiles.fullname} {profiles.username}
+
+            <div className="flex flex-1 justify-center items-start p-6 space-x-6">
+                <div className="w-1/3 bg-white shadow-lg rounded-lg p-6 text-center">
+                    {profileContent ? (
+                        <>
+                            <Image
+                                src={profileContent.profilePic}
+                                alt="User Profile"
+                                width={150}
+                                height={150}
+                                className="rounded-full mx-auto"
+                                priority
+                            />
+                            <h2 className="text-2xl font-bold text-gray-800 mt-4">
+                                {profileContent.fullname}
                             </h2>
-                            <p className="text-blue-500 mt-2">{profiles.email}</p>
-                            <p className="text-gray-600">Joined on {profiles.createdAt}</p>
-                        </div>
-                        <div className="flex justify-between mt-6 text-center">
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-800">{profiles.following}</h3>
-                                <p className="text-gray-600">Following</p>
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-800">{profiles.followers}</h3>
-                                <p className="text-gray-600">Followers</p>
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-gray-800">{profiles.events}</h3>
-                                <p className="text-gray-600">No. of Posts</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-1">
-                        <ProfileForm profiles={profiles} setProfiles={setProfiles} />
-                    </div>
+                            <p className="text-gray-600">@{profileContent.username}</p>
+                            <p className="text-blue-500 mt-2">{profileContent.email}</p>
+                            <p className="text-sm text-gray-500 mt-4">
+                                Joined on: {profileContent.createdAt}
+                            </p>
+                        </>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+                </div>
+                <div className="w-2/3 bg-white shadow-lg rounded-lg p-6">
+                    <ProfileForm profiles={profileContent} setProfiles={setProfileContent} />
                 </div>
             </div>
         </div>
