@@ -20,13 +20,16 @@ const Form = () => {
             }, {
                 withCredentials: true
             });
-            const userId = response.data.user_id
-            route.push(`/profile/${userId}`);
+    
+            const userId = response.data.user_id;
+            localStorage.setItem("userId", userId);
+            route.push("/mainWeb");
+    
         } catch (error) {
             console.error('Error:', error);
         }
-
     };
+    
     return (
         <StyledWrapper>
             <div className="flex justify-center items-center min-h-screen">

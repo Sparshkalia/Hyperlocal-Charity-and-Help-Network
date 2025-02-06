@@ -53,27 +53,27 @@ export default function ProfilePage() {
                 </nav>
             </aside>
 
-            <div className="flex flex-1 justify-center items-start p-6 space-x-6">
-                <div className="w-1/3 bg-white shadow-lg rounded-lg p-6 text-center">
-                    {profileContent ? (
-                        <>
-                            <Image
-                                src={profileContent.profilePic}
-                                alt="User Profile"
-                                width={150}
-                                height={150}
-                                className="rounded-full mx-auto"
-                                priority
-                            />
-                            <h2 className="text-2xl font-bold text-gray-800 mt-4">
-                                {profileContent.fullname}
-                            </h2>
-                            <p className="text-gray-600">@{profileContent.username}</p>
-                            <p className="text-blue-500 mt-2">{profileContent.email}</p>
-                            <p className="text-sm text-gray-500 mt-4">
-                                Joined on: {profileContent.createdAt}
-                            </p>
-                        </>
+            <div className="flex flex-1 justify-center items-start p-8 space-x-8">
+    <div className="w-1/3 bg-white shadow-lg rounded-xl p-8 text-center">
+        {profileContent ? (
+            <>
+                <Image
+                    src={profileContent.profilePic}
+                    alt="User Profile"
+                    width={400}  // Increased size of the profile image
+                    height={400}  // Adjusted height
+                    className="rounded-md mx-auto"
+                    priority
+                />
+                <h2 className="text-3xl font-semibold text-gray-800 mt-6">
+                    {profileContent.fullname}
+                </h2>
+                <p className="text-gray-600 text-xl">@{profileContent.username}</p>
+                <p className="text-blue-500 mt-4">{profileContent.email}</p>
+                <p className="text-sm text-gray-500 mt-6">
+                    Joined on: {profileContent.createdAt}
+                </p>
+            </>
                     ) : (
                         <p>Loading...</p>
                     )}
