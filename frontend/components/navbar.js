@@ -1,76 +1,140 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogPanel } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ModeToggle } from "./ui/theme-btn";
+import LoadingBar from "react-top-loading-bar";
 
 const Navbar = () => {
   const router = useRouter();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentPath, setCurrentPath] = useState("");
 
-  const handleSignup = () => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCurrentPath(window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentPath) {
+      setProgress(20);
+      setTimeout(() => setProgress(40), 100);
+      setTimeout(() => setProgress(100), 400);
+    }
+  }, [currentPath]);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
     router.push("/signup");
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/20 backdrop-blur-lg shadow-lg border-b border-white/30">
-      <div className="container mx-auto flex justify-between items-center py-4 px-6">
-        {/* Logo */}
-        <div
-          className=" text-black text-2xl font-bold cursor-pointer hover:scale-105 transition"
-          onClick={() => router.push("/")}
-        >
-          🏥 H-C-H-N
+    <nav className="sticky top-0 z-50 bg-background/50 p-4 backdrop-blur border-b">
+      <LoadingBar
+        color="#933ce6"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+      />
+
+      <div className="container mx-auto flex justify-between items-center">
+        <Link href="/" className="text-lg font-bold">
+          H-C-H-N
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex space-x-4 items-center">
+          {["Home", "About", "Contact"].map((item) => (
+            <Link
+              key={item}
+              href={`/${item.toLowerCase()}`}
+              className="hover:scale-105 hover:font-semibold transition-transform duration-300"
+            >
+              {item}
+            </Link>
+          ))}
+          <div className="flex items-center space-x-2">
+            <Button variant="outline">Signup</Button>
+            <ModeToggle />
+          </div>
         </div>
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex space-x-8 text-white font-medium">
-          <li className="text-black hover:text-purple-600 transition">
-            <a href="/">Home</a>
-          </li>
-          <li className="text-black hover:text-purple-600  transition">
-            <a href="/services">Services</a>
-          </li>
-          <li className="text-black hover:text-purple-600  transition">
-            <a href="/about">About</a>
-          </li>
-          <li className="text-black hover:text-purple-600  transition">
-            <a href="/contact">Contact</a>
-          </li>
-        </ul>
+        {/* Mobile Navigation */}
+        <div className="md:hidden flex items-center">
+          <ModeToggle />
+          <button
+            onClick={() => setMobileMenuOpen(true)}
+            className="ml-2"
+            aria-label="Open Menu"
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16m-7 6h7"
+              ></path>
+            </svg>
+          </button>
 
-        {/* Sign Up Button */}
-        <button
-          onClick={handleSignup}
-          className="hidden md:block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-transform hover:scale-105"
-        >
-          Sign Up
-        </button>
-
-        {/* Mobile Menu Button */}
-        <div
-          className="md:hidden text-white text-2xl cursor-pointer"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          {menuOpen ? <FaTimes /> : <FaBars />}
+          {/* Mobile Menu */}
+          <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} className="lg:hidden">
+            <div className="fixed inset-0 z-50 bg-black/20" />
+            <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+              <div className="flex items-center justify-between">
+                <Link href="/" className="-m-1.5 p-1.5">
+                  <span className="sr-only">HCHCN</span>
+                  <img
+                    alt="HCHN Logo"
+                    src="/logo.png"
+                    className="h-8 w-auto"
+                  />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                >
+                  <span className="sr-only">Close menu</span>
+                  <XMarkIcon aria-hidden="true" className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="mt-6 flow-root">
+                <div className="-my-6 divide-y divide-gray-500/10">
+                  <div className="space-y-2 py-6">
+                    {["Home", "About", "Contact"].map((item) => (
+                      <Link
+                        key={item}
+                        href={`/${item.toLowerCase()}`}
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+                      >
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="py-6">
+                    <Button
+                      onClick={handleLogin}
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white hover:bg-gray-50"
+                    >
+                      sign up
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </DialogPanel>
+          </Dialog>
         </div>
-      </div>
-
-      {/* Mobile Menu */}
-      <div
-        className={`absolute top-0 left-0 w-full h-screen bg-black/80 backdrop-blur-lg flex flex-col items-center justify-center space-y-6 text-white text-xl transition-all ${
-          menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-      >
-        <a href="/" className="text-black hover:text-gray-300 transition" onClick={() => setMenuOpen(false)}>Home</a>
-        <a href="/services" className="text-black hover:text-gray-300 transition" onClick={() => setMenuOpen(false)}>Services</a>
-        <a href="/about" className="text-black hover:text-gray-300 transition" onClick={() => setMenuOpen(false)}>About</a>
-        <a href="/contact" className="text-black hover:text-gray-300 transition" onClick={() => setMenuOpen(false)}>Contact</a>
-        <button
-          onClick={handleSignup}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-transform hover:scale-105"
-        >
-          Sign Up
-        </button>
       </div>
     </nav>
   );
