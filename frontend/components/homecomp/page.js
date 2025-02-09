@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 const fadeIn = {
   hidden: { opacity: 0, y: 50 },
@@ -10,8 +11,13 @@ const fadeIn = {
 
 const Homecomps = () => {
   const { theme } = useTheme();
-  const bgColor = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
-  const textColor = theme === "dark" ? "text-white" : "text-gray-900";
+  const [bgColor, setBgColor] = useState("bg-gray-100");
+  const [textColor, setTextColor] = useState("text-gray-900");
+
+  useEffect(() => {
+    setBgColor(theme === "dark" ? "bg-gray-900" : "bg-gray-100");
+    setTextColor(theme === "dark" ? "text-white" : "text-gray-900");
+  }, [theme]);
 
   return (
     <div className={`min-h-screen py-12 px-4 lg:px-24 ${bgColor} transition-all duration-500`}>

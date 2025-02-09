@@ -90,7 +90,7 @@ const Navbar = () => {
           {/* Mobile Menu */}
           <Dialog open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} className="lg:hidden">
             <div className="fixed inset-0 z-50 bg-black/20" />
-            <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+            <DialogPanel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white dark:bg-black dark:text-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
               <div className="flex items-center justify-between">
                 <Link href="/" className="-m-1.5 p-1.5">
                   <span className="sr-only">HCHCN</span>
@@ -103,7 +103,7 @@ const Navbar = () => {
                 <button
                   type="button"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="-m-2.5 rounded-md p-2.5 text-gray-700"
+                  className="-m-2.5 rounded-md p-2.5 text-gray-700 dark:text-gray-300"
                 >
                   <span className="sr-only">Close menu</span>
                   <XMarkIcon aria-hidden="true" className="h-6 w-6" />
@@ -116,7 +116,7 @@ const Navbar = () => {
                       <Link
                         key={item}
                         href={`/${item.toLowerCase()}`}
-                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50"
+                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         {item}
                       </Link>
@@ -125,7 +125,7 @@ const Navbar = () => {
                   <div className="py-6">
                     <Button
                       onClick={handleLogin}
-                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white hover:bg-gray-50"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold text-white dark:text-black bg-primary hover:bg-primary-dark"
                     >
                       sign up
                     </Button>
