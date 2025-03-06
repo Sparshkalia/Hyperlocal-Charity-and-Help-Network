@@ -6,8 +6,10 @@ edition = "2024"
 [dependencies]
 dotenv = "0.15.0"
 anyhow = "1.0.95"
+actix = "0.13.5"
 actix-cors = "0.7.0"
 actix-web = "4.9.0"
+actix-web-actors = "4.3.1+deprecated"
 serde = {version = "1.0.217", features = ["derive"]}
 sqlx = {version = "0.8.3", features = ["postgres", "runtime-tokio-native-tls", "macros", "chrono"]}
 chrono = {version = "0.4.39", features = ["serde"]}

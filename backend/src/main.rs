@@ -1,9 +1,8 @@
-use crate::auth::Token;
+use crate::api::*;
+use crate::auth_service::*;
+use crate::chat_service::chatserver::ChatServer;
 use crate::db_service::Database;
-use crate::handlers::{
-    add_comment, add_new_user, add_post, get_messages_between_users, get_users, get_users_by_id,
-    login, send_message, show_comments, update_user,
-};
+use actix::Actor;
 use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{App, HttpServer, http};
@@ -12,9 +11,10 @@ use dotenv::dotenv;
 use sqlx::migrate::Migrator;
 use std::env;
 
-mod auth;
+mod api;
+mod auth_service;
+mod chat_service;
 mod db_service;
-mod handlers;
 mod models;
 
 static MIGRATOR: Migrator = sqlx::migrate!();
@@ -27,6 +27,7 @@ async fn main() -> Result<()> {
     )
     .await
     .context("Could not connect to database")?;
+    let chat_server = ChatServer::new(db.clone()).start();
 
     MIGRATOR
         .run(&db.pool)
@@ -34,6 +35,7 @@ async fn main() -> Result<()> {
         .context("Failed to run migrations")?;
 
     let db_data = Data::new(db);
+    let chat_server_data = Data::new(chat_server);
     let token_data = Data::new(Token::new()?);
 
     println!("Server started successfully!");
@@ -43,6 +45,7 @@ async fn main() -> Result<()> {
         App::new()
             .app_data(db_data.clone())
             .app_data(token_data.clone())
+            .app_data(chat_server_data.clone())
             .wrap(
                 Cors::default()
                     .allow_any_origin()
@@ -65,6 +68,7 @@ async fn main() -> Result<()> {
             .service(update_user)
             .service(send_message)
             .service(get_messages_between_users)
+            .service(websocket_route)
     })
     .bind(env::var("ADDRESS").context("$ADDRESS not found")?)?
     .run()
