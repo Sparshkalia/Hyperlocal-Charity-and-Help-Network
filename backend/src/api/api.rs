@@ -1,9 +1,13 @@
-use crate::auth::Token;
-use crate::db_service::Database;
-use crate::models::{LoginData, NewComment, NewMessage, NewPost, NewUser, PostType, UpdateUser};
+use crate::auth_service::*;
+use crate::chat_service::chatserver::ChatServer;
+use crate::chat_service::websocketsession::WebSocketSession;
+use crate::db_service::*;
+use crate::models::*;
+use actix::Addr;
 use actix_web::cookie::Cookie;
-use actix_web::web::{Data, Json, Path};
-use actix_web::{HttpRequest, HttpResponse, Responder, get, post, put};
+use actix_web::web::{Data, Json, Path, Payload};
+use actix_web::{HttpRequest, HttpResponse, Responder, get, post, put, Error};
+use actix_web_actors::ws;
 use serde::Deserialize;
 use serde_json::json;
 
@@ -214,7 +218,7 @@ async fn update_user(
 async fn send_message(
     db: Data<Database>,
     req: HttpRequest,
-    new_message: Json<NewMessage>,
+    new_message: Json<ChatMessage>,
     token: Data<Token>,
 ) -> impl Responder {
     let auth_token = match Token::extract_token_from_cookie(&req) {
@@ -267,5 +271,46 @@ async fn get_messages_between_users(
         Err(e) => HttpResponse::InternalServerError().json(json!({
             "error": e.to_string()
         })),
+    }
+}
+
+#[get("/ws/{sender}/{receiver}")]
+async fn websocket_route(
+    chat_server: Data<Addr<ChatServer>>,
+    req: HttpRequest,
+    stream: Payload,
+    path: Path<(i32, i32)>,
+    token: Data<Token>,
+) -> Result<HttpResponse, Error> {  // Change return type to Result<HttpResponse, Error>
+    let (sender, _receiver) = path.into_inner();
+
+    // Authentication
+    // let auth_token = match Token::extract_token_from_cookie(&req) {
+    //     None => return Ok(HttpResponse::Unauthorized().body("Unauthorized")),
+    //     Some(token) => token,
+    // };
+    //
+    // let token_user_id = match token.get_user_id_from_jwt(&auth_token) {
+    //     Ok(user_id) => user_id,
+    //     Err(_) => return Ok(HttpResponse::Unauthorized().body("Invalid token")),
+    // };
+    //
+    // if token_user_id != sender {
+    //     return Ok(HttpResponse::Unauthorized().body("Unauthorized"));
+    // }
+
+    // Create WebSocketSession
+    let ws = WebSocketSession {
+        user_id: sender,
+        addr: chat_server.get_ref().clone(),
+    };
+
+    // Start WebSocket connection
+    match ws::start(ws, &req, stream) {
+        Ok(resp) => Ok(resp),
+        Err(e) => {
+            eprintln!("Websocket error: {e}");
+            Err(e)
+        }
     }
 }

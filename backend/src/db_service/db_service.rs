@@ -1,11 +1,9 @@
-use crate::auth::{check_password, hash_password};
-use crate::models::{
-    Comment, LoginData, Message, NewComment, NewMessage, NewPost, NewUser, Post, PostType,
-    UpdateUser, User,
-};
+use crate::auth_service::*;
+use crate::models::*;
 use anyhow::{Context, Result, anyhow};
 use sqlx::PgPool;
 
+#[derive(Clone)]
 pub struct Database {
     pub pool: PgPool,
 }
@@ -211,7 +209,7 @@ impl Database {
             .context("Failed to update user")
     }
     ///Query to add a new message
-    pub async fn add_message(&self, new_message: NewMessage) -> Result<Message> {
+    pub async fn add_message(&self, new_message: ChatMessage) -> Result<Message> {
         sqlx::query_as!(
             Message,
             r#"
@@ -223,9 +221,9 @@ impl Database {
             new_message.receiver_id,
             new_message.content,
         )
-            .fetch_one(&self.pool)
-            .await
-            .context("Failed to add new message")
+        .fetch_one(&self.pool)
+        .await
+        .context("Failed to add new message")
     }
     ///Query to get all the messages between two people
     pub async fn get_messages_between_users(&self, bf: i32, gf: i32) -> Result<Vec<Message>> {
@@ -239,8 +237,8 @@ impl Database {
             bf,
             gf
         )
-            .fetch_all(&self.pool)
-            .await
-            .context("Failed to get messages between bf and gf")
+        .fetch_all(&self.pool)
+        .await
+        .context("Failed to get messages between bf and gf")
     }
 }

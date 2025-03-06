@@ -1,3 +1,4 @@
+use actix::Message as ActixMessage;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Type};
@@ -83,13 +84,6 @@ pub struct UpdateUser {
     pub password: Option<String>,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct NewMessage {
-    pub sender_id: i32,
-    pub receiver_id: i32,
-    pub content: String,
-}
-
 #[derive(Serialize, Deserialize, FromRow)]
 pub struct Message {
     pub message_id: i32,
@@ -98,4 +92,12 @@ pub struct Message {
     pub content: String,
     pub sent_at: DateTime<Utc>,
     pub is_read: bool,
+}
+
+#[derive(ActixMessage, Serialize, Deserialize, Clone)]
+#[rtype(result = "()")]
+pub struct ChatMessage {
+    pub sender_id: i32,
+    pub receiver_id: i32,
+    pub content: String,
 }
