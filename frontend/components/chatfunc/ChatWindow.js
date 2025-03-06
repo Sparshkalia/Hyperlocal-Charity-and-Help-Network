@@ -1,5 +1,4 @@
 'use client';
-<<<<<<< HEAD
 import { useState } from 'react';
 
 export default function ChatWindow({ activeChat, chats, setChats }) {
@@ -30,47 +29,17 @@ export default function ChatWindow({ activeChat, chats, setChats }) {
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!newMessage.trim()) return;// this trim restrict to send empty message
-=======
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-
-export default function ChatWindow() {
-  const searchParams = useSearchParams();
-  const commenterName = searchParams.get('commenterName');  
-  const [chatMessages, setChatMessages] = useState({});
-  const [newMessage, setNewMessage] = useState('');
-  const [activeChat, setActiveChat] = useState(null);
-
-  useEffect(() => {
-    if (commenterName) {
-      setActiveChat({ id: commenterName, name: commenterName });
-    }
-  }, [commenterName]);
-
-  if (!activeChat) {
-    return <div className="flex items-center justify-center text-gray-500">Select a chat to start messaging.</div>;
-  }
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!newMessage.trim()) return;
->>>>>>> c193774 (Re-establish tracking after reinitialization)
 
     const updatedMessages = {
       ...chatMessages,
       [activeChat.id]: [
         ...(chatMessages[activeChat.id] || []),
-<<<<<<< HEAD
         { id: Date.now(), text: newMessage, sender: 'You' },//update here i have used random id for message
-=======
-        { id: Date.now(), text: newMessage, sender: 'You' },
->>>>>>> c193774 (Re-establish tracking after reinitialization)
       ],
     };
 
     setChatMessages(updatedMessages);
     setNewMessage('');
-<<<<<<< HEAD
 
     setChats((prevChats) =>
       prevChats.map((chat) =>
@@ -99,26 +68,10 @@ export default function ChatWindow() {
                 }`}
               >
                 <p className="text-sm text-gray-800 dark:text-gray-200">{message.text}</p>
-=======
-  };
-
-  return (
-    <div className="flex flex-col h-full border rounded-md shadow-md">
-      <div className="p-4 bg-gray-100 border-b">
-        <h2 className="font-semibold">{activeChat.name}</h2>
-      </div>
-      <div className="flex-grow p-4 overflow-y-auto bg-white">
-        {chatMessages[activeChat.id]?.length > 0 ? (
-          <ul>
-            {chatMessages[activeChat.id].map((message) => (
-              <li key={message.id} className={`mb-2 p-2 rounded-md ${message.sender === 'You' ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'}`}>
-                {message.text}
->>>>>>> c193774 (Re-establish tracking after reinitialization)
               </li>
             ))}
           </ul>
         ) : (
-<<<<<<< HEAD
           <div className="text-gray-500 dark:text-gray-400">No messages yet...</div>
         )}
       </div>
@@ -139,21 +92,6 @@ export default function ChatWindow() {
           </button>
         </form>
       </div>
-=======
-          <p>No messages yet...</p>
-        )}
-      </div>
-      <form onSubmit={handleSendMessage} className="p-4 bg-gray-100 border-t flex gap-x-2">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-grow px-4 py-2 border rounded-md"
-        />
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Send</button>
-      </form>
->>>>>>> c193774 (Re-establish tracking after reinitialization)
     </div>
   );
 }

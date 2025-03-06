@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useProfile } from "./profilecomponents";
 import axios from "axios";
 
-const DEFAULT_PROFILE_PIC = "/slogo.png"; // Default image if profile_pic is missing
+const DEFAULT_PROFILE_PIC = "/slogo.png"; 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 function Usericon() {
@@ -77,8 +77,8 @@ function Usericon() {
     };
 
     return (
-        <div className="fixed top-4 right-4 z-50" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            <button className="border p-2 bg-gray-200 text-black rounded-full hover:bg-gray-300 transition flex items-center shadow-md" onClick={handleProfileClick}>
+        <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+            <button className="border bg-gray-200 text-black rounded-full hover:bg-gray-300 transition flex items-center shadow-md" onClick={handleProfileClick}>
                 <img src={profilePic} alt="Profile" className="w-10 h-10 rounded-full object-cover border border-gray-300" />
             </button>
             <AnimatePresence>
