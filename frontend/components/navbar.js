@@ -58,11 +58,7 @@ const Navbar = () => {
             </Link>
           ))}
           <div className="flex items-center space-x-2">
-<<<<<<< HEAD
             <Button variant="outline">Signup</Button>
-=======
-            <Button variant="outline" onClick={handleLogin}>Signup</Button>
->>>>>>> c193774 (Re-establish tracking after reinitialization)
             <ModeToggle />
           </div>
         </div>
