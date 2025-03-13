@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 
 const Page = () => {
   const typedRef = useRef(null);
-
   useEffect(() => {
     const typed = new Typed(typedRef.current, {
       strings: [

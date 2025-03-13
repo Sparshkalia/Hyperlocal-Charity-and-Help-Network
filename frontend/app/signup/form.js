@@ -15,15 +15,13 @@ export default function Form() {
   const router = useRouter();
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches){
       setDarkMode(true);
     }
   }, []);
-
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -44,9 +42,7 @@ export default function Form() {
   return (
     <div className={`${darkMode ? "white" : ""}`}>
       <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 transition-all duration-300">
-        {/* Form Container */}
         <div className="relative w-full max-w-md p-8 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl backdrop-blur-lg bg-opacity-80 dark:bg-opacity-80">
-          {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
             className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:scale-110 transition"
