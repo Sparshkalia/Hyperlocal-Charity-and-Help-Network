@@ -32,7 +32,10 @@ const Navbar = () => {
     e.preventDefault();
     router.push("/signup");
   };
-
+  const handleabout=(e)=> {
+    e.preventDefault()
+    router.push("/About");
+  }
   return (
     <nav className="sticky top-0 z-50 bg-background/50 p-4 backdrop-blur border-b">
       <LoadingBar
@@ -48,20 +51,24 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-4 items-center">
-          {["Home", "About", "Contact"].map((item) => (
-            <Link
-              key={item}
-              href={`/${item.toLowerCase()}`}
-              className="hover:scale-105 hover:font-semibold transition-transform duration-300"
-            >
-              {item}
-            </Link>
-          ))}
+  {/* Navigation Buttons */}
+          <div className="flex space-x-4">
+            <Button variant="outline" asChild>
+              <Link href="/About">About</Link>
+            </Button>
+
+            <Button variant="outline" asChild>
+              <Link href="/contact">Contact</Link>
+            </Button>
+          </div>
+
+          {/* Signup & Dark Mode Toggle */}
           <div className="flex items-center space-x-2">
             <Button variant="outline" onClick={handleLogin}>Signup</Button>
             <ModeToggle />
           </div>
         </div>
+
 
         {/* Mobile Navigation */}
         <div className="md:hidden flex items-center">

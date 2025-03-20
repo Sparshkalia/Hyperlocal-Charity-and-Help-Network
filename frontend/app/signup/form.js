@@ -101,7 +101,7 @@ export default function Form() {
             {/* Sign Up Link */}
             <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
               Don't have an account?{" "}
-              <a href="#" className="text-blue-600 dark:text-blue-400 hover:underline">
+              <a href="/newuser" className="text-blue-600 dark:text-blue-400 hover:underline">
                 Sign Up
               </a>
             </p>

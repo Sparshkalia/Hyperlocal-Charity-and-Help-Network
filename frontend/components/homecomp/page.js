@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-
+import { useRouter } from "next/navigation";
 const fadeIn = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
@@ -18,7 +18,10 @@ const Homecomps = () => {
     setBgColor(theme === "dark" ? "bg-gray-900" : "bg-gray-100");
     setTextColor(theme === "dark" ? "text-white" : "text-gray-900");
   }, [theme]);
-
+  const route=useRouter()
+  const handlelogin=()=>{
+    route.push('/signup')
+  }
   return (
     <div className={`min-h-screen py-12 px-4 lg:px-24 ${bgColor} transition-all duration-500`}>
       {/* Hero Section */}
@@ -35,7 +38,7 @@ const Homecomps = () => {
         <p className="mt-4 text-lg tracking-wide">
           "A small step from you can mean a giant leap for someone in need."
         </p>
-        <Button className="mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg">
+        <Button onClick={handlelogin} className="mt-6 bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg">
           Join the Mission
         </Button>
       </motion.div>
@@ -59,7 +62,7 @@ const Homecomps = () => {
             <li>Takes just a few minutes but can save lives.</li>
             <li>Improves your health by rejuvenating blood cells.</li>
           </ul>
-          <Button className="mt-4 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg">
+          <Button onClick={handlelogin} className="mt-4 bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg">
             Donate Now
           </Button>
         </motion.div>

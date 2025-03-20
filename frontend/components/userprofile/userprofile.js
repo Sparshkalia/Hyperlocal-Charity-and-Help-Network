@@ -58,7 +58,7 @@ export default function ProfilePage() {
         {profileContent ? (
             <>
                 <Image
-                    src={profileContent.profilePic}
+                    src={'/slogo.png'}
                     alt="User Profile"
                     width={400}  // Increased size of the profile image
                     height={400}  // Adjusted height
@@ -79,7 +79,7 @@ export default function ProfilePage() {
                     )}
                 </div>
                 <div className="w-2/3 bg-white shadow-lg rounded-lg p-6">
-                    <ProfileForm profiles={profileContent} setProfiles={setProfileContent} />
+                    <ProfileForm userId={localStorage.getItem("userId")} profiles={profileContent} setProfiles={setProfileContent} />
                 </div>
             </div>
         </div>
