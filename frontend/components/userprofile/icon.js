@@ -5,6 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import { motion, AnimatePresence } from "framer-motion";
 import { useProfile } from "./profilecomponents";
 import axios from "axios";
+import byteaToDataURL from "../../lib/api";
 
 const DEFAULT_PROFILE_PIC = "/slogo.png"; 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -46,7 +47,20 @@ function Usericon() {
             if (response.data) {
                 setProfileContent(response.data);
                 setFullname(response.data.full_name || "User");
-                setProfilePic(response.data.profile_pic || DEFAULT_PROFILE_PIC);
+
+                if (response.data.profile_pic && response.data.profile_pic_type) {
+                    // Fetch the binary image data
+                    const imgRes = await axios.get(`${API_BASE_URL}/user/${userId}/profile-pic`, {
+                        responseType: "arraybuffer",
+                        withCredentials: true,
+                    });
+                    const byteArray = new Uint8Array(imgRes.data);
+                    const dataUrl = byteaToDataURL(byteArray, response.data.profile_pic_type);
+                    setProfilePic(dataUrl);
+                } else {
+                    setProfilePic(DEFAULT_PROFILE_PIC);
+                }
+
                 localStorage.setItem("profileData", JSON.stringify(response.data));
             }
         } catch (error) {
@@ -75,6 +89,7 @@ function Usericon() {
         localStorage.removeItem("profileData");
         router.push("/signup");
     };
+
 
     return (
         <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>

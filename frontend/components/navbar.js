@@ -51,7 +51,7 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-4 items-center">
-  {/* Navigation Buttons */}
+          {/* Navigation Buttons */}
           <div className="flex space-x-4">
             <Button variant="outline" asChild>
               <Link href="/About">About</Link>
@@ -61,7 +61,6 @@ const Navbar = () => {
               <Link href="/contact">Contact</Link>
             </Button>
           </div>
-
           {/* Signup & Dark Mode Toggle */}
           <div className="flex items-center space-x-2">
             <Button variant="outline" onClick={handleLogin}>Signup</Button>

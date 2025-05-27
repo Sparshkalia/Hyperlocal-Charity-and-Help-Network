@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { updateUser } from '@/lib/api'; 
+import { updateUser } from '@/lib/api';
+import byteaToDataURL from '@/lib/byteaToDataURL';
 
 export default function ProfileForm({ userId, profiles, setProfiles }) {
     const DEFAULT_PROFILE_PIC = '/slogo.png';
-    
+
     const [formData, setFormData] = useState({
         fullname: '',
         email: '',
         username: '',
+        password: '',
         createdAt: '',
     });
 
@@ -17,16 +19,30 @@ export default function ProfileForm({ userId, profiles, setProfiles }) {
 
     useEffect(() => {
         if (profiles) {
-            setFormData({
+            setFormData((prev) => ({
+                ...prev,
                 fullname: profiles.fullname || '',
                 email: profiles.email || '',
                 username: profiles.username || '',
                 createdAt: profiles.createdAt || '',
-            });
-            // Only set profile pic if it's not an empty string
-            setProfilePic(profiles.profile_pic && profiles.profile_pic !== '' 
-                ? profiles.profile_pic 
-                : DEFAULT_PROFILE_PIC);
+            }));
+
+            if (profiles.profile_pic && profiles.profile_pic_type) {
+                let byteArray;
+                if (Array.isArray(profiles.profile_pic.data)) {
+                    byteArray = new Uint8Array(profiles.profile_pic.data);
+                } else if (profiles.profile_pic.data && profiles.profile_pic.data.data) {
+                    byteArray = new Uint8Array(profiles.profile_pic.data.data);
+                } else {
+                    byteArray = new Uint8Array([]);
+                }
+
+                const dataURL = byteaToDataURL(byteArray, profiles.profile_pic_type);
+                setProfilePic(dataURL);
+                setProfilePicType(profiles.profile_pic_type);
+            } else {
+                setProfilePic(DEFAULT_PROFILE_PIC);
+            }
         }
     }, [profiles]);
 
@@ -53,15 +69,18 @@ export default function ProfileForm({ userId, profiles, setProfiles }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Only include profile pic in payload if it's not the default image
-        const imagePayload = profilePic !== DEFAULT_PROFILE_PIC ? [profilePic] : [];
+        let base64Image = null;
+        if (profilePic && profilePic.startsWith("data:")) {
+            base64Image = profilePic.split(',')[1];
+        }
 
         try {
             const updatedUser = await updateUser(
                 userId,
                 formData.fullname,
-                imagePayload, 
-                profilePicType
+                base64Image,
+                profilePicType,
+                formData.password || null
             );
 
             setProfiles(updatedUser);
@@ -70,19 +89,19 @@ export default function ProfileForm({ userId, profiles, setProfiles }) {
             alert(error.message || 'Failed to update profile.');
         }
     };
-
     return (
         <div className="bg-white shadow-lg rounded-lg p-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Edit Profile</h2>
             <form onSubmit={handleSubmit}>
                 <div className="flex items-center space-x-4 mb-6">
-                    <Image
-                        src={'/slogo.png'}
-                        alt="Profile Avatar"
-                        width={80}
-                        height={80}
-                        className="w-20 h-20 object-cover rounded-full"
-                    />
+                    <div className="relative w-20 h-20">
+                        <Image
+                            src={profilePic || DEFAULT_PROFILE_PIC}
+                            alt="Profile Avatar"
+                            layout="fill"
+                            className="object-cover rounded-full"
+                        />
+                    </div>
                     <input
                         type="file"
                         accept="image/*"

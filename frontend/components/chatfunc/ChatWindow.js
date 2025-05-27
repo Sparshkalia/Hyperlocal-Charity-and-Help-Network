@@ -44,7 +44,7 @@ export default function ChatWindow({ activeChat, chats, setChats }) {
     setChats((prevChats) =>
       prevChats.map((chat) =>
         chat.id === activeChat.id
-          ? { ...chat, lastMessage: newMessage ,time:getCurrentDateTime()}//this function will update the last message and add the time when the last msg was send in chat at the sidebar
+          ? { ...chat, lastMessage: newMessage ,time:getCurrentDateTime()}
           : chat
       )
     );
